@@ -13,6 +13,7 @@ public class ARTapToPlace : MonoBehaviour
     private Pose placementPose;
     private ARRaycastManager arRaycastManager;
     private bool placementPoseIsValid = false;
+    public GameObject objectToPlace;
 
     void Start()
     {
@@ -25,6 +26,16 @@ public class ARTapToPlace : MonoBehaviour
     {
         UpdatePlacementPose();
         UpdatePlacementIndicator();
+
+        if (placementPoseIsValid && Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began)
+        {
+            PlaceObject();
+        }
+    }
+
+    private void PlaceObject()
+    {
+        Instantiate(objectToPlace, placementPose.position, placementPose.rotation);
     }
 
     private void UpdatePlacementIndicator()
@@ -46,13 +57,17 @@ public class ARTapToPlace : MonoBehaviour
         List<ARRaycastHit> hits = new List<ARRaycastHit>();
        arRaycastManager.Raycast(screenCenter, hits, TrackableType.Planes);
 
-        Debug.Log(hits.Count);
+       Debug.Log(hits.Count);
 
        placementPoseIsValid = hits.Count > 0;
 
        if (placementPoseIsValid)
         {
             placementPose = hits[0].pose;
+
+            Vector3 cameraForward = Camera.current.transform.forward;
+            Vector3 cameraBearing = new Vector3(cameraForward.x, 0, cameraForward.z).normalized;
+            placementPose.rotation = Quaternion.LookRotation(cameraBearing);
         }
     }
 }
