@@ -57,7 +57,7 @@ public class ARTapToPlace : MonoBehaviour
         List<ARRaycastHit> hits = new List<ARRaycastHit>();
        arRaycastManager.Raycast(screenCenter, hits, TrackableType.Planes);
 
-       Debug.Log(hits.Count);
+       //Debug.Log(hits.Count);
 
        placementPoseIsValid = hits.Count > 0;
 
